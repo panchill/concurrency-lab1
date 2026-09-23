@@ -11,14 +11,17 @@ public class Waiter {
         if (waitersCount < 1) {
             throw new IllegalArgumentException("waitersCount must be >= 1");
         }
-        this.availableWaiters = new Semaphore(waitersCount, true);
+        this.availableWaiters = new Semaphore(waitersCount);
         this.foodPool = foodPool;
     }
 
-    public boolean requestPortion() {
+    public boolean requestPortion(int programmerId) throws InterruptedException {
+        if (!foodPool.awaitTurn(programmerId)) {
+            return false;
+        }
         availableWaiters.acquireUninterruptibly();
         try {
-            return foodPool.takePortion();
+            return foodPool.takePortion(programmerId);
         } finally {
             availableWaiters.release();
         }

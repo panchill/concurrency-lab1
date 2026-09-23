@@ -31,14 +31,13 @@ public class Programmer implements Runnable {
     public void run() {
         try {
             startGate.await();
+            while (waiter.requestPortion(id)) {
+                eat();
+            }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            return;
         } catch (BrokenBarrierException e) {
-            return;
-        }
-        while (waiter.requestPortion()) {
-            eat();
+            e.printStackTrace();
         }
     }
 

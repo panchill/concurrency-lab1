@@ -10,11 +10,18 @@ import java.util.concurrent.Future;
 
 public class DiningSimulation {
 
+    public static final int DEFAULT_MAX_LEAD = 100;
+
     private final int programmersCount;
     private final int foodCount;
     private final int waitersCount;
+    private final int maxLead;
 
     public DiningSimulation(int programmersCount, int foodCount, int waitersCount) {
+        this(programmersCount, foodCount, waitersCount, DEFAULT_MAX_LEAD);
+    }
+
+    public DiningSimulation(int programmersCount, int foodCount, int waitersCount, int maxLead) {
         if (programmersCount < 2) {
             throw new IllegalArgumentException("programmersCount must be >= 2");
         }
@@ -24,9 +31,13 @@ public class DiningSimulation {
         if (waitersCount < 1) {
             throw new IllegalArgumentException("waitersCount must be >= 1");
         }
+        if (maxLead < 1) {
+            throw new IllegalArgumentException("maxLead must be >= 1");
+        }
         this.programmersCount = programmersCount;
         this.foodCount = foodCount;
         this.waitersCount = waitersCount;
+        this.maxLead = maxLead;
     }
 
     public int[] runTask() {
@@ -35,7 +46,7 @@ public class DiningSimulation {
             spoons[i] = new Spoon(i);
         }
 
-        FoodPool foodPool = new FoodPool(foodCount);
+        FoodPool foodPool = new FoodPool(foodCount, programmersCount, maxLead);
         Waiter waiter = new Waiter(waitersCount, foodPool);
         CyclicBarrier startGate = new CyclicBarrier(programmersCount);
 
@@ -63,7 +74,7 @@ public class DiningSimulation {
                 }
             }
         } finally {
-            pool.shutdown();
+            pool.shutdownNow();
         }
 
         int[] eatenFood = new int[programmersCount];
