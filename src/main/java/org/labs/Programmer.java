@@ -10,13 +10,11 @@ public class Programmer implements Runnable {
     private final Spoon firstSpoon;
     private final Spoon secondSpoon;
     private final Waiter waiter;
-    private final CyclicBarrier startGate;
     private final AtomicInteger mealsEaten = new AtomicInteger(0);
 
-    public Programmer(int id, Spoon leftSpoon, Spoon rightSpoon, Waiter waiter, CyclicBarrier startGate) {
+    public Programmer(int id, Spoon leftSpoon, Spoon rightSpoon, Waiter waiter) {
         this.id = id;
         this.waiter = waiter;
-        this.startGate = startGate;
 
         if (leftSpoon.getId() < rightSpoon.getId()) {
             this.firstSpoon = leftSpoon;
@@ -30,14 +28,11 @@ public class Programmer implements Runnable {
     @Override
     public void run() {
         try {
-            startGate.await();
             while (waiter.requestPortion(id)) {
                 eat();
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        } catch (BrokenBarrierException e) {
-            e.printStackTrace();
         }
     }
 

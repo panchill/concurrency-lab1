@@ -2,7 +2,6 @@ package org.labs;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -48,13 +47,12 @@ public class DiningSimulation {
 
         FoodPool foodPool = new FoodPool(foodCount, programmersCount, maxLead);
         Waiter waiter = new Waiter(waitersCount, foodPool);
-        CyclicBarrier startGate = new CyclicBarrier(programmersCount);
 
         Programmer[] programmers = new Programmer[programmersCount];
         for (int i = 0; i < programmersCount; i++) {
             Spoon left = spoons[i];
             Spoon right = spoons[(i + 1) % programmersCount];
-            programmers[i] = new Programmer(i, left, right, waiter, startGate);
+            programmers[i] = new Programmer(i, left, right, waiter);
         }
 
         ExecutorService pool = Executors.newFixedThreadPool(programmersCount);

@@ -2,9 +2,9 @@ package org.labs;
 
 public class Main {
 
-    private static final int DEFAULT_PROGRAMMERS = 2;
+    private static final int DEFAULT_PROGRAMMERS = 7;
     private static final int DEFAULT_FOOD = 1_000_000;
-    private static final int DEFAULT_WAITERS = 1;
+    private static final int DEFAULT_WAITERS = 2000;
 
     public static void main(String[] args) {
         int programmersCount = args.length > 0 ? Integer.parseInt(args[0]) : DEFAULT_PROGRAMMERS;
